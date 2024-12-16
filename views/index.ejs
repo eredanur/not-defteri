@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not Defteri</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center">Not Defteri</h1>
+
+        <!-- Not Ekleme veya Düzenleme Formu -->
+        <form action="<%= notToEdit ? '/duzenle/' + notToEdit.id : '/kaydet' %>" method="POST" class="mt-4">
+            <div class="mb-3">
+                <label for="baslik" class="form-label">Başlık</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="baslik" 
+                    name="baslik" 
+                    value="<%= notToEdit ? notToEdit.baslik : '' %>" 
+                    placeholder="Başlık girin" 
+                    required>
+            </div>
+            <div class="mb-3">
+                <label for="not_metni" class="form-label">Not</label>
+                <textarea 
+                    class="form-control" 
+                    id="not_metni" 
+                    name="not_metni" 
+                    rows="3" 
+                    placeholder="Notunuzu yazın" 
+                    required><%= notToEdit ? notToEdit.not_metni : '' %></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary"><%= notToEdit ? 'Düzenle' : 'Kaydet' %></button>
+        </form>
+
+        <hr class="my-5">
+
+        <div class="row">
+            <!-- Aktif Notlar -->
+            <div class="col-md-6">
+                <h3>Aktif Notlar</h3>
+                <% notlar.forEach((not) => { %>
+                    <% if (!not.tamamlandi) { %>
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <h5><%= not.baslik %></h5>
+                                <p><%= not.not_metni %></p>
+                                <form action="/duzenle/<%= not.id %>" method="GET" class="d-inline">
+                                    <button class="btn btn-sm btn-warning">Düzenle</button>
+                                </form>
+                                <form action="/sil/<%= not.id %>" method="POST" class="d-inline">
+                                    <button class="btn btn-sm btn-danger">Sil</button>
+                                </form>
+                                <form action="/tamamla/<%= not.id %>" method="POST" class="d-inline">
+                                    <button class="btn btn-sm btn-success">Tamamlandı</button>
+                                </form>
+                            </div>
+                        </div>
+                    <% } %>
+                <% }); %>
+            </div>
+
+            <!-- Tamamlanan Notlar -->
+            <div class="col-md-6">
+                <h3>Tamamlanan Notlar</h3>
+                <% notlar.forEach((not) => { %>
+                    <% if (not.tamamlandi) { %>
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <h5><%= not.baslik %></h5>
+                                <p><%= not.not_metni %></p>
+                                <small class="text-muted"><i>Tamamlandı: <%= not.tarih %></i></small>
+                            </div>
+                        </div>
+                    <% } %>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
